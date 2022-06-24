@@ -1,52 +1,82 @@
 #include <sourcemod>
 
+ConVar um_restrict_untrusted_angles;
+ConVar um_restrict_body_lean;
+ConVar um_restrict_extended_angles;
+ConVar um_restrict_fake_duck;
+
 public Plugin:myinfo = 
 { 
-    name = "unmatched.gg HvH Essentials", 
-    author = "imi-tat0r", 
-    description = "Essentials for HvH servers", 
-    version = "1.0"
+	name = "unmatched.gg HvH Essentials", 
+	author = "imi-tat0r", 
+	description = "Essentials for HvH servers", 
+	version = "1.1"
 };
 
 public void OnPluginStart()
 {
+	// setup cvars
+	um_restrict_untrusted_angles = CreateConVar("um_restrict_untrusted_angles", "1", "If this cvar is enabled, untrusted angles will be normalized/clamped");
+	um_restrict_body_lean = CreateConVar("um_restrict_body_lean", "1", "If this cvar is enabled, body lean will be disabled");
+	um_restrict_extended_angles = CreateConVar("um_restrict_extended_angles", "1", "If this cvar is enabled, extended angles will be disabled");
+	um_restrict_fake_duck = CreateConVar("um_restrict_fake_duck", "1", "If this cvar is enabled, fake duck will be disabled");
+	
 	// show ad every 10 minutes
-    CreateTimer(600.0, Advertising, _, TIMER_REPEAT);
+	CreateTimer(600.0, Advertising, _, TIMER_REPEAT);
 }
 
 public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon, &subtype, &cmdnum, &tickcount, &seed, mouse[2])
 {
 	// player is dead, continue
-    new bool:alive = IsPlayerAlive(client);
-    if(!alive)
-        return Plugin_Continue;
+	new bool:alive = IsPlayerAlive(client);
+	if(!alive)
+		return Plugin_Continue;
 
 	// fake duck fix
-    if( buttons & IN_BULLRUSH )
-        buttons &= ~IN_BULLRUSH;
+	if (GetConVarBool(um_restrict_fake_duck))
+	{
+		if( buttons & IN_BULLRUSH )
+			buttons &= ~IN_BULLRUSH;
+	}
 
-	// pitch clamp
-    if (angles[0] > 89.0)
-        angles[0] = 89.0;
-    else if (angles[0] < -89.0)
-        angles[0] = -89.0;
+	// untrusted angles fix
+	if (GetConVarBool(um_restrict_untrusted_angles))
+	{
+		// pitch clamp
+		if (angles[0] > 89.0)
+			angles[0] = 89.0;
+		else if (angles[0] < -89.0)
+			angles[0] = -89.0;
 
-	// yaw normalize
-    while (angles[1] > 180.0)
-        angles[1] -= 360.0;
-    while(angles[1] < -180.0)
-        angles[1] += 360.0;
-
+		// yaw normalize
+		while (angles[1] > 180.0)
+			angles[1] -= 360.0;
+		while(angles[1] < -180.0)
+			angles[1] += 360.0;
+		
+		// roll clamp
+		if (angles[2] > 90.0)
+			angles[2] = 90.0;
+		else if (angles[2] < -90.0)
+			angles[2] = -90.0;
+	}
+	
 	// roll disable
-    if(angles[2] != 0.0)
-        angles[2] = 0.0;
+	if (GetConVarBool(um_restrict_body_lean))
+	{
+		if(angles[2] != 0.0)
+			angles[2] = 0.0;
+	}
 
-    return Plugin_Changed;
+	return Plugin_Changed;
 }
 
 // primordial fix - credits: https://github.com/r4klatif/extended-angle-fix
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
+	if (!GetConVarBool(um_restrict_extended_angles))
+		return;
+	
 	float eye_angles[3];
 	float v_angle[3];
 
@@ -62,9 +92,9 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 // advertising running every 10 minutes. Keep this in to comply with the license
 public Action:Advertising(Handle timer)
 {
-    PrintToChatAll("[unmatched.\x10gg\x01] Competitive HvH League")
-    PrintToChatAll("[unmatched.\x10gg\x01] Play for \x10free\x01 at unmatched.\x10gg\x01.")
-    PrintToChatAll("[unmatched.\x10gg\x01] Get premium for even more content and awesome rewards.")
-    
-    return Plugin_Continue;
+	PrintToChatAll("[unmatched.\x10gg\x01] Competitive HvH League")
+	PrintToChatAll("[unmatched.\x10gg\x01] Play for \x10free\x01 at unmatched.\x10gg\x01.")
+	PrintToChatAll("[unmatched.\x10gg\x01] Get premium for even more content and awesome rewards.")
+	
+	return Plugin_Continue;
 }
