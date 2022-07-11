@@ -48,11 +48,11 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 		else if (angles[0] < -89.0)
 			angles[0] = -89.0;
 
-		// yaw normalize
-		while (angles[1] > 180.0)
-			angles[1] -= 360.0;
-		while(angles[1] < -180.0)
-			angles[1] += 360.0;
+		// yaw clamp
+		if (angles[1] > 180.0)
+			angles[1] = 180.0;
+		if(angles[1] < -180.0)
+			angles[1] = -180.0;
 		
 		// roll clamp
 		if (angles[2] > 90.0)
