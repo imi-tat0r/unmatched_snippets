@@ -10,16 +10,16 @@ public Plugin:myinfo =
 	name = "unmatched.gg HvH Essentials", 
 	author = "imi-tat0r", 
 	description = "Essentials for HvH servers", 
-	version = "1.1"
+	version = "1.2"
 };
 
 public void OnPluginStart()
 {
 	// setup cvars
-	um_restrict_untrusted_angles = CreateConVar("um_restrict_untrusted_angles", "1", "If this cvar is enabled, untrusted angles will be normalized/clamped");
-	um_restrict_body_lean = CreateConVar("um_restrict_body_lean", "1", "If this cvar is enabled, body lean will be disabled");
-	um_restrict_extended_angles = CreateConVar("um_restrict_extended_angles", "1", "If this cvar is enabled, extended angles will be disabled");
-	um_restrict_fake_duck = CreateConVar("um_restrict_fake_duck", "1", "If this cvar is enabled, fake duck will be disabled");
+	um_restrict_untrusted_angles = CreateConVar("um_restrict_untrusted_angles", "1", "If this cvar is enabled, untrusted angles will be normalized/clamped", FCVAR_NOTIFY | FCVAR_REPLICATED);
+	um_restrict_body_lean = CreateConVar("um_restrict_body_lean", "1", "If this cvar is enabled, body lean will be disabled", FCVAR_NOTIFY | FCVAR_REPLICATED);
+	um_restrict_extended_angles = CreateConVar("um_restrict_extended_angles", "1", "If this cvar is enabled, extended angles will be disabled", FCVAR_NOTIFY | FCVAR_REPLICATED);
+	um_restrict_fake_duck = CreateConVar("um_restrict_fake_duck", "1", "If this cvar is enabled, fake duck will be disabled", FCVAR_NOTIFY | FCVAR_REPLICATED);
 	
 	// show ad every 10 minutes
 	CreateTimer(600.0, Advertising, _, TIMER_REPEAT);
