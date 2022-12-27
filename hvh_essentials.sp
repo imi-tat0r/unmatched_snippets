@@ -4,6 +4,7 @@ ConVar um_restrict_untrusted_angles;
 ConVar um_restrict_body_lean;
 ConVar um_restrict_extended_angles;
 ConVar um_restrict_fake_duck;
+ConVar um_matchmaking;
 
 public Plugin:myinfo = 
 { 
@@ -20,9 +21,15 @@ public void OnPluginStart()
 	um_restrict_body_lean = CreateConVar("um_restrict_body_lean", "1", "If this cvar is enabled, body lean will be disabled", FCVAR_NOTIFY | FCVAR_REPLICATED);
 	um_restrict_extended_angles = CreateConVar("um_restrict_extended_angles", "1", "If this cvar is enabled, extended angles will be disabled", FCVAR_NOTIFY | FCVAR_REPLICATED);
 	um_restrict_fake_duck = CreateConVar("um_restrict_fake_duck", "1", "If this cvar is enabled, fake duck will be disabled", FCVAR_NOTIFY | FCVAR_REPLICATED);
+	um_matchmaking = CreateConVar("um_matchmaking", "0", "If this cvar is enabled, m_bIsValveDS will be spoofed", 8448, false, 0.0, false, 0.0);
 	
 	// show ad every 10 minutes
 	CreateTimer(600.0, Advertising, _, TIMER_REPEAT);
+}
+
+public void OnMapStart()
+{
+	GameRules_SetProp("m_bIsValveDS", GetConVarBool(um_matchmaking), 4, 0, false);
 }
 
 public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:angles[3], &weapon, &subtype, &cmdnum, &tickcount, &seed, mouse[2])
