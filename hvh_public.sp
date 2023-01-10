@@ -17,11 +17,24 @@ public void OnPluginStart()
 	um_rage_quit = CreateConVar("um_rage_quit", "1", "If this cvar is enabled, rage quit is enabled", FCVAR_NOTIFY | FCVAR_REPLICATED);
 	um_reset_score = CreateConVar("um_reset_score", "1", "If this cvar is enabled, reset score is enabled", FCVAR_NOTIFY | FCVAR_REPLICATED);
 
+	ServerCommand("mp_backup_round_file \"\"");
+	ServerCommand("mp_backup_round_file_last \"\"");
+	ServerCommand("mp_backup_round_file_pattern \"\"");
+	ServerCommand("mp_backup_round_auto 0");
+
 	RegConsoleCmd("rq", Command_RageQuit);
 	RegConsoleCmd("ragequit", Command_RageQuit);
 	
 	RegConsoleCmd("rs", Command_ResetScore);
 	RegConsoleCmd("resetscore", Command_ResetScore);
+}
+
+public void OnMapStart()
+{
+	ServerCommand("mp_backup_round_file \"\"");
+	ServerCommand("mp_backup_round_file_last \"\"");
+	ServerCommand("mp_backup_round_file_pattern \"\"");
+	ServerCommand("mp_backup_round_auto 0");
 }
 
 public Action Command_RageQuit(int client, int args) 
