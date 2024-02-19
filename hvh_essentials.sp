@@ -41,8 +41,6 @@ public void OnPluginStart()
 	
 	RegConsoleCmd("rs", Command_ResetScore);
 	RegConsoleCmd("resetscore", Command_ResetScore);
-	// show ad every 10 minutes
-	CreateTimer(600.0, Advertising, _, TIMER_REPEAT);
 }
 
 public void OnMapStart()
@@ -178,16 +176,6 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 	eye_angles[2] = v_angle[2];
 
 	SetEntPropVector(client, Prop_Data, "v_angle", eye_angles);
-}
-
-// advertising running every 10 minutes. Keep this in to comply with the license
-public Action:Advertising(Handle timer)
-{
-	PrintToChatAll("[unmatched.\x10gg\x01] Competitive HvH League")
-	PrintToChatAll("[unmatched.\x10gg\x01] Play for \x10free\x01 at unmatched.\x10gg\x01.")
-	PrintToChatAll("[unmatched.\x10gg\x01] Get premium for more content and rewards.")
-	
-	return Plugin_Continue;
 }
 
 stock bool IsValidClient(int client)
